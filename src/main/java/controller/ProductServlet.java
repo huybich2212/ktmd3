@@ -33,6 +33,33 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String act = request.getParameter("act");
+        if(act == null) {
+            act = "";
+        }
+        switch (act) {
+            case"searchName":
+                searchName(request,response);
+                break;
+            case"searchprice":
+                searchPrice(request,response);
+        }
+    }
 
+    private void searchPrice(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("list.jsp");
+        int start = Integer.parseInt(request.getParameter("start"));
+        int end = Integer.parseInt(request.getParameter("end"));
+        List<Product> products = productSevice.findByPrice(start, end);
+        request.setAttribute("product", products);
+        requestDispatcher.forward(request, response);
+    }
+
+    private void searchName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("List.jsp");
+        String name = request.getParameter("name");
+        List<Product> products = productSevice.findByName(name);
+        request.setAttribute("products", products);
+        requestDispatcher.forward(request, response);
     }
 }
